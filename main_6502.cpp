@@ -1,18 +1,16 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include <iostream>
 
 using Byte = unsigned char;
 using Word = unsigned short;
 
 using u32 = unsigned int;
 
-struct Mem
-{
+struct Mem {
     static constexpr u32 MAX_MEM = 1024 * 64;
     Byte Data[MAX_MEM];
 
     void Initialize() {
-        for(u32 i = 0; i < MAX_MEM; i++) {
+        for (u32 i = 0; i < MAX_MEM; i++) {
             Data[i] = 0;
         }
     }
@@ -24,24 +22,21 @@ struct Mem
     }
 };
 
-
 struct CPU {
-    
+    Word PC; // Program Counter
+    Word SP; // Stack Pointer
 
-    Word PC; //Program Counter
-    Word SP; //Stack Pointer
+    Byte A, X, Y; // Registers
 
-    Byte A, X, Y; //Registers
+    Byte C : 1; // status flags: Carry Flag
+    Byte Z : 1; // status flags: Zero
+    Byte I : 1; // status flags: Interrupt Disable Flag
+    Byte D : 1; // status flags: Decimal Mode Flag
+    Byte B : 1; // status flags: Break Command Flag
+    Byte V : 1; // status flags: Overflow Flag
+    Byte N : 1; // status flags: Negative Flag
 
-    Byte C : 1; //status flags: Carry Flag
-    Byte Z : 1; //status flags: Zero
-    Byte I : 1; //status flags: Interrupt Disable Flag
-    Byte D : 1; //status flags: Decimal Mode Flag
-    Byte B : 1; //status flags: Break Command Flag
-    Byte V : 1; //status flags: Overflow Flag
-    Byte N : 1; //status flags: Negative Flag
-
-    void Reset( Mem& memory) {
+    void Reset(Mem& memory) {
         PC = 0xFFFC;
         SP = 0x0100;
         C = Z = I = D = B = V = N = 0;
@@ -53,15 +48,16 @@ struct CPU {
         Byte data = memory[PC];
         PC++;
         Cycles--;
+        return data;
     }
 
     void Execute(u32 Cycles, Mem& memory) {
         while (Cycles > 0) {
             Byte Ins = FetchByte(Cycles, memory);
-            (void) Ins;
+            (void) Ins; // Placeholder, you can add your logic here
         }
     }
-}
+};
 
 int main() {
     Mem mem;
