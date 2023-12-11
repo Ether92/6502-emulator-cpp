@@ -51,10 +51,20 @@ struct CPU {
         return data;
     }
 
+    static constexpr Byte INS_LDA_IM = 0xA9;
+
     void Execute(u32 Cycles, Mem& memory) {
         while (Cycles > 0) {
             Byte Ins = FetchByte(Cycles, memory);
-            (void) Ins; // Placeholder, you can add your logic here
+            switch (Ins) {
+                case INS_LDA_IM:
+                {
+                    Byte Value = FetchByte(Cycles, memory);
+                    A = Value;
+                    Z = (A == 0);
+                    N = (A & 0b10000000) > 0;
+                } break;
+            }
         }
     }
 };
